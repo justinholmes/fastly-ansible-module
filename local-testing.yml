@@ -1,0 +1,10 @@
+---
+- name: local-testing
+  hosts: localhost
+  connection: local
+  tasks:
+    - local_action:
+        module: fastly
+        key: "d3cafb4dde4dbeef"
+        service: "SU1Z0isxPaozGVKXdv0eY"
+        command: "purge_all"
