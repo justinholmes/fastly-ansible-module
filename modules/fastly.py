@@ -1,7 +1,16 @@
+#!/usr/bin/env python
+# (c) 2015, Justin Holmes <justin@nascency.co.uk>
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 
-#!/usr/bin/python
+# http://www.apache.org/licenses/LICENSE-2.0
 
-# 'fastly'.
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 DOCUMENTATION = '''
 ---
@@ -10,10 +19,10 @@ short_description: Run Ansible against fastly api
 description:
 - Run Ansible against fastly api
 author: Justin Holmes
-version_added: 2.0
+version_added: 1.6
 '''
 EXAMPLES = '''
-# Create a topic
+# purge cdn for a service
   - local_action:
       module: fastly
       key: "d3cafb4dde4dbeef"
@@ -21,17 +30,17 @@ EXAMPLES = '''
       command: "purge_all"
 
 '''
+
+import sys
 import fastly
 
-def main:
-    module = AnsibleModule(
-        argument_spec=dict(
-            key=dict(default='d3cafb4dde4dbeef', type='str', required=True),
-            service=dict(default='SU1Z0isxPaozGVKXdv0eY', type='str', required=True)
-            command=dict(default='purge_all', type='str', required=True)
-        ),
-        supports_check_mode=False,
+def main():
+    argument_spec=dict(
+        key=dict(type='str', required=True),
+        service=dict(type='str', required=True),
+        command=dict(type='str', required=True)
     )
+    module = AnsibleModule(argument_spec, supports_check_mode=False)
 
     key = module.params.get('key')
     service = module.params.get('service')
@@ -40,10 +49,13 @@ def main:
     api = fastly.API()
     api.authenticate_by_key(key)
 
-    if command === 'purge_all':
+    if command == 'purge_all':
         apicall = api.purge_service(service)
         module.exit_json(changed=apicall)
         sys.exit(0)
 
 
-main()
+# import module snippets
+from ansible.module_utils.basic import *
+if __name__ == '__main__':
+    main()
